@@ -11,13 +11,13 @@ import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.services.BookService;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/api")
 public class BookController {
 
 	@Autowired
 	private BookService bookService;
 
-	@GetMapping
+	@GetMapping("/books")
 	public List<Book> getAllBooks() {
 		return bookService.getAllBooks();
 	}
