@@ -17,4 +17,8 @@ public class UserAppService {
 	public List<UserApp> getAllUsers() {
 		return userAppRepository.findAll();
 	}
+	
+	public UserApp saveUser(UserApp user) {
+		return userAppRepository.save(user);
+	}
 }
