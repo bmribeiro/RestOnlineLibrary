@@ -1,9 +1,13 @@
 package com.codelab.restOnlineLibrary.entities;
 
+import java.util.Set;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +25,9 @@ public class Book {
 	private int copies;
 
 	private boolean available;
+
+	@OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
+	private Set<Reservation> reservations;
 
 	public Book() {
 	}
@@ -72,9 +79,17 @@ public class Book {
 		this.available = available;
 	}
 
+	public Set<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(Set<Reservation> reservations) {
+		this.reservations = reservations;
+	}
+
 	@Override
 	public String toString() {
-		return "Book{" + "id=" + id + ", title='" + title + '\'' + ", category='" + category + '\'' + ", copies="
-				+ copies + ", available=" + available + '}';
+		return "Book [id=" + id + ", title=" + title + ", category=" + category + ", copies=" + copies + ", available="
+				+ available + ", reservations=" + reservations + "]";
 	}
 }

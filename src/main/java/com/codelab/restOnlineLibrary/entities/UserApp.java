@@ -1,11 +1,14 @@
 package com.codelab.restOnlineLibrary.entities;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,6 +28,10 @@ public class UserApp {
 	private LocalDateTime created;
 
 	private boolean active;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<Reservation> reservations;
+	
 
 	public UserApp() {
 	}
@@ -84,10 +91,20 @@ public class UserApp {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+	
+	public Set<Reservation> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(Set<Reservation> reservations) {
+		this.reservations = reservations;
+	}
 
 	@Override
 	public String toString() {
 		return "UserApp [id=" + id + ", username=" + username + ", email=" + email + ", profile=" + profile
-				+ ", created=" + created + ", active=" + active + "]";
+				+ ", created=" + created + ", active=" + active + ", reservations=" + reservations + "]";
 	}
+
+	
 }
