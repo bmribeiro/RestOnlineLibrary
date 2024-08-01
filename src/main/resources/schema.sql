@@ -1,3 +1,14 @@
+-- Authenticated User
+CREATE TABLE auth_user (
+    id BIGINT AUTO_INCREMENT,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
+    login VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+-- InMemory User
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255),
@@ -7,6 +18,7 @@ CREATE TABLE users (
     active BOOLEAN
 );
 
+-- InMemory books
 CREATE TABLE books (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
@@ -15,6 +27,7 @@ CREATE TABLE books (
     available BOOLEAN
 );
 
+-- reservations
 CREATE TABLE reservations (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
