@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.codelab.restOnlineLibrary.entities.AuthUser;
 import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.entities.Reservation;
-import com.codelab.restOnlineLibrary.entities.UserApp;
+import com.codelab.restOnlineLibrary.repositories.AuthUserRepository;
 import com.codelab.restOnlineLibrary.repositories.BookRepository;
 import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
-import com.codelab.restOnlineLibrary.repositories.UserAppRepository;
 
 @Service
 public class ReservationService {
@@ -19,31 +19,34 @@ public class ReservationService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private UserAppRepository userRepository;
+    private AuthUserRepository userRepository;
 
     @Autowired
     private BookRepository bookRepository;
 
-    public Reservation createReservation(Long userId, Long bookId) {
+    public Reservation createReservation(Reservation reservation) {
     	
-        UserApp user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+    	AuthUser userEl = userRepository.findById(reservation.getUser().getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        Book bookEl = bookRepository.findById(reservation.getUser().getId()).orElseThrow(() -> new RuntimeException("Book not found"));
 
-        if (!(book.getCopies() > 0)) {
+        if (!(bookEl.getCopies() > 0)) {
             throw new RuntimeException("Book is not available");
         }
 
-        Reservation reservation = new Reservation();
-        reservation.setUser(user);
-        reservation.setBook(book);
         reservation.setReservedAt(LocalDateTime.now());
         reservation.setStatus("reserved");
         reservation.setStatusChangedAt(LocalDateTime.now());
+        
+        // Update Book Availability
+        int copies = bookEl.getCopies();
+        bookEl.setCopies(copies - 1);
+        
+        this.bookRepository.save(bookEl);
 
         return reservationRepository.save(reservation);
     }
 
-    public Reservation updateReservationStatus(Long reservationId, String newStatus) {
+	public Reservation updateReservationStatus(Long reservationId, String newStatus) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
 

@@ -1,6 +1,6 @@
 package com.codelab.restOnlineLibrary.entities;
 
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,8 +26,8 @@ public class Book {
 
 	private boolean available;
 
-	@OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
-	private Set<Reservation> reservations;
+	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+	private List<Reservation> reservations;
 
 	public Book() {
 	}
@@ -79,11 +79,11 @@ public class Book {
 		this.available = available;
 	}
 
-	public Set<Reservation> getReservations() {
+	public List<Reservation> getReservations() {
 		return reservations;
 	}
 
-	public void setReservations(Set<Reservation> reservations) {
+	public void setReservations(List<Reservation> reservations) {
 		this.reservations = reservations;
 	}
 

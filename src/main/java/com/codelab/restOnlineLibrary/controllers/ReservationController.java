@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,11 +22,11 @@ public class ReservationController {
 	private ReservationService reservationService;
 
 	@PostMapping("/reservations")
-	public ResponseEntity<Reservation> createReservation(@RequestParam Long userId, @RequestParam Long bookId) {
+	public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
 		
 		try {
-			Reservation reservation = reservationService.createReservation(userId, bookId);
-			return ResponseEntity.ok(reservation);
+			Reservation reservationEl = reservationService.createReservation(reservation);
+			return ResponseEntity.ok(reservationEl);
 			
 		} catch (RuntimeException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);

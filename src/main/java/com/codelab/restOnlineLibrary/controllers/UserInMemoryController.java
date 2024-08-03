@@ -14,59 +14,53 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codelab.restOnlineLibrary.dto.BookDTO;
-import com.codelab.restOnlineLibrary.entities.Book;
-import com.codelab.restOnlineLibrary.services.BookService;
+import com.codelab.restOnlineLibrary.dto.UserInMemoryDTO;
+import com.codelab.restOnlineLibrary.services.UserInMemoryService;
 
 @RestController
 @RequestMapping("/api")
-public class BookController {
+public class UserInMemoryController {
 
 	@Autowired
-	private BookService bookService;
+	private UserInMemoryService userInMemoryService;
 
-	@GetMapping("/books")
-	public ResponseEntity<List<BookDTO>> findAll() {
+	@GetMapping("/users")
+	public ResponseEntity<List<UserInMemoryDTO>> findAll() {
 
-		List<BookDTO> books = bookService.findAll();
+		List<UserInMemoryDTO> users = userInMemoryService.findAll();
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
-		return new ResponseEntity<>(books, headers, HttpStatus.OK);
+		return new ResponseEntity<List<UserInMemoryDTO>>(users, headers, HttpStatus.OK);
 	}
 
-	@GetMapping("/books/{id}")
-	public ResponseEntity<BookDTO> findById(@PathVariable Long id) {
-		
-		return bookService.findById(id).map(ResponseEntity::ok)
+	@GetMapping("/users/{id}")
+	public ResponseEntity<UserInMemoryDTO> findById(@PathVariable Long id) {
+
+		return userInMemoryService.findById(id).map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
-	@PostMapping("/books")
-	public ResponseEntity<BookDTO> save(@RequestBody BookDTO bookDTO) {
+	@PostMapping("/users")
+	public ResponseEntity<UserInMemoryDTO> save(@RequestBody UserInMemoryDTO userDTO) {
 
-		BookDTO savedBook = bookService.save(bookDTO);
+		UserInMemoryDTO savedUser = userInMemoryService.save(userDTO);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
 
-		return new ResponseEntity<>(savedBook, headers, HttpStatus.CREATED);
+		return new ResponseEntity<>(savedUser, headers, HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/books/{id}")
-	public ResponseEntity<Book> deleteById(@PathVariable Long id) {
-		
-		if (bookService.deleteById(id)) {
+	@DeleteMapping("/users/{id}")
+	public ResponseEntity<UserInMemoryDTO> deleteById(@PathVariable Long id) {
+
+		if (userInMemoryService.deleteById(id)) {
 			return ResponseEntity.noContent().build();
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 
-	
-	
-	
-	
-	
 }

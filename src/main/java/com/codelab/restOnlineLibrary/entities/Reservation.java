@@ -21,7 +21,7 @@ public class Reservation {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
-	private UserApp user;
+	private AuthUser user;
 
 	@ManyToOne
 	@JoinColumn(name = "book_id", nullable = false)
@@ -44,11 +44,11 @@ public class Reservation {
 		this.id = id;
 	}
 
-	public UserApp getUser() {
+	public AuthUser getUser() {
 		return user;
 	}
 
-	public void setUser(UserApp user) {
+	public void setUser(AuthUser user) {
 		this.user = user;
 	}
 

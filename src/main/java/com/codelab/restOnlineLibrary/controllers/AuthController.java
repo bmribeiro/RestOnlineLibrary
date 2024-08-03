@@ -7,12 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.codelab.restOnlineLibrary.auth.UserAuthenticationProvider;
-import com.codelab.restOnlineLibrary.dto.CredentialsDto;
-import com.codelab.restOnlineLibrary.dto.SignUpDto;
-import com.codelab.restOnlineLibrary.dto.UserDto;
-import com.codelab.restOnlineLibrary.services.AuthUserService;
+import com.codelab.restOnlineLibrary.dto.AuthUserDTO;
+import com.codelab.restOnlineLibrary.dto.LoginDTO;
+import com.codelab.restOnlineLibrary.dto.RegisterDTO;
+import com.codelab.restOnlineLibrary.services.AuthService;
 
 import jakarta.validation.Valid;
 
@@ -20,21 +19,21 @@ import jakarta.validation.Valid;
 public class AuthController {
 
 	@Autowired
-	private AuthUserService userService;
-	
+	private AuthService authService;
+
 	@Autowired
-	private  UserAuthenticationProvider userAuthenticationProvider;
+	private UserAuthenticationProvider userAuthenticationProvider;
 
 	@PostMapping("/login")
-	public ResponseEntity<UserDto> login(@RequestBody @Valid CredentialsDto credentialsDto) {
-		UserDto userDto = userService.login(credentialsDto);
+	public ResponseEntity<AuthUserDTO> login(@RequestBody @Valid LoginDTO credentialsDto) {
+		AuthUserDTO userDto = authService.login(credentialsDto);
 		userDto.setToken(userAuthenticationProvider.createToken(userDto));
 		return ResponseEntity.ok(userDto);
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<UserDto> register(@RequestBody @Valid SignUpDto user) {
-		UserDto createdUser = userService.register(user);
+	public ResponseEntity<AuthUserDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
+		AuthUserDTO createdUser = authService.register(registerDTO);
 		createdUser.setToken(userAuthenticationProvider.createToken(createdUser));
 		return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
 	}

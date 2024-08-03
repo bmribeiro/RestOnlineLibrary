@@ -38,7 +38,15 @@ public class SecurityConfig {
 				
 				.authorizeHttpRequests((requests) -> requests.requestMatchers(HttpMethod.POST, "/login", "/register").permitAll()
 						
+						// TODO: Remove - DEBUG PURPOSE
+						.requestMatchers("/h2-console/**").permitAll()
+						
 						.anyRequest().authenticated());
+		
+				// TODO: Remove - allow H2 Console
+		        http.headers(headers -> headers
+		            .frameOptions().sameOrigin()
+		        );
 
 		return http.build();
 	}
