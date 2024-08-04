@@ -1,6 +1,8 @@
-package com.codelab.restOnlineLibrary.dto;
+package com.codelab.restOnlineLibrary.dto.book;
 
 import java.util.List;
+
+import com.codelab.restOnlineLibrary.dto.ReservationDTO;
 
 public class BookDTO {
 

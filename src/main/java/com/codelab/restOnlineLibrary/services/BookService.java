@@ -7,7 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.codelab.restOnlineLibrary.dto.BookDTO;
+import com.codelab.restOnlineLibrary.dto.book.BookDTO;
+import com.codelab.restOnlineLibrary.dto.book.BookRentalDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.entities.Reservation;
 import com.codelab.restOnlineLibrary.mappers.BookMapper;
@@ -52,13 +53,39 @@ public class BookService {
 		}
 	}
 
-	public List<BookDTO> reservationsByUser(Long userId) {
+	public List<BookRentalDTO> getBooksRentedByUser(Long userId) {
+
+		// User reservations
 		List<Reservation> reservations = reservationRepository.findByUserId(userId);
 
-		List<BookDTO> booksDTO = reservations.stream().map(reservation -> reservation.getBook()).distinct()
-				.map(bookMapper::toDTO).collect(Collectors.toList());
+		// Id of books reserved by the user
+		List<Long> bookIds = reservations.stream().map(reservation -> reservation.getBook().getId())
+				.collect(Collectors.toList());
 
-		return booksDTO;
+		// Books reserved by the user
+		List<Book> books = bookRepository.findAllById(bookIds);
+
+		return reservations.stream()
+
+				// transforms each element of the stream
+				.map(reservation -> {
+
+					// used to find the book corresponding to the current reservation
+					Book book = books.stream()
+
+							// book associated with the current reservation
+							.filter(b -> b.getId().equals(reservation.getBook().getId())).findFirst()
+							.orElseThrow(() -> new RuntimeException("Book not found"));
+
+					// Build BookRental
+					BookRentalDTO dto = new BookRentalDTO.Builder().setId(book.getId()).setTitle(book.getTitle())
+							.setCategory(book.getCategory()).setReservedAt(reservation.getReservedAt())
+							.setStatus(reservation.getStatus()).setStatusChangedAt(reservation.getStatusChangedAt())
+							.build();
+
+					return dto;
+
+				}).collect(Collectors.toList());
 	}
 
 }

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.codelab.restOnlineLibrary.dto.BookDTO;
+import com.codelab.restOnlineLibrary.dto.book.BookDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.entities.Reservation;
 import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
