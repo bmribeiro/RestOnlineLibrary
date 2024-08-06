@@ -2,11 +2,16 @@ package com.codelab.restOnlineLibrary.controllers;
 
 import java.net.URI;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.codelab.restOnlineLibrary.auth.UserAuthenticationProvider;
 import com.codelab.restOnlineLibrary.dto.AuthUserDTO;
 import com.codelab.restOnlineLibrary.dto.LoginDTO;
@@ -17,6 +22,8 @@ import jakarta.validation.Valid;
 
 @RestController
 public class AuthController {
+
+	private static final Logger logger = LogManager.getLogger(AuthController.class);
 
 	@Autowired
 	private AuthService authService;
@@ -32,10 +39,22 @@ public class AuthController {
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthUserDTO> register(@RequestBody @Valid RegisterDTO registerDTO) {
+	public ResponseEntity<AuthUserDTO> register(@RequestBody RegisterDTO registerDTO) {
 		AuthUserDTO createdUser = authService.register(registerDTO);
 		createdUser.setToken(userAuthenticationProvider.createToken(createdUser));
 		return ResponseEntity.created(URI.create("/users/" + createdUser.getId())).body(createdUser);
 	}
 
+	@PostMapping("/validate")
+	public ResponseEntity<AuthUserDTO> loginWithValidToken(@RequestHeader("Authorization") String authHeader) {
+		
+		try {
+			// Validate the token
+			AuthUserDTO loginWithToken = authService.loginWithToken(authHeader);
+			return ResponseEntity.ok(loginWithToken);
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+	}
 }
