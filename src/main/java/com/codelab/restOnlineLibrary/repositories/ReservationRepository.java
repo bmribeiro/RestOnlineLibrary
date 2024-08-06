@@ -11,4 +11,10 @@ import com.codelab.restOnlineLibrary.entities.Reservation;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
 	List<Reservation> findByUserId(Long userId);
+	
+	List<Reservation> findByUserIdAndStatus(Long userId, String status);
+	
+	Reservation findByUserIdAndBookIdAndStatus(Long userId, Long bookId, String status);
+	
+	
 }

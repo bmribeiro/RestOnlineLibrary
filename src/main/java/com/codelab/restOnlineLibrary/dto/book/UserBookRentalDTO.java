@@ -2,20 +2,34 @@ package com.codelab.restOnlineLibrary.dto.book;
 
 import java.time.LocalDateTime;
 
-public class BookRentalDTO {
+/**
+ * DTO (Data Transfer Object) that represents a book rented by the user. It can
+ * be used to transfer data between application layers and also to represent
+ * rental history based on the status of the book.
+ * 
+ * This DTO may include information for both currently rented books and books
+ * that have been returned, depending on the status.
+ */
+public class UserBookRentalDTO {
 
 	private Long id;
 	private String title;
 	private String category;
 	private LocalDateTime reservedAt;
+
+	/**
+	 * Status of the book (e.g., "rented" or "returned"). This field determines
+	 * whether the DTO represents a currently rented book or a book that has been
+	 * returned, which can be used to track rental history.
+	 */
 	private String status;
 	private LocalDateTime statusChangedAt;
 
-	public BookRentalDTO() {
+	public UserBookRentalDTO() {
 		super();
 	}
 
-	public BookRentalDTO(Builder builder) {
+	public UserBookRentalDTO(Builder builder) {
 		this.id = builder.id;
 		this.title = builder.title;
 		this.category = builder.category;
@@ -74,8 +88,8 @@ public class BookRentalDTO {
 
 	@Override
 	public String toString() {
-		return "BookRentalDTO [id=" + id + ", title=" + title + ", category=" + category + ", reservedAt=" + reservedAt
-				+ ", status=" + status + ", statusChangedAt=" + statusChangedAt + "]";
+		return "UserBookRentalDTO [id=" + id + ", title=" + title + ", category=" + category + ", reservedAt="
+				+ reservedAt + ", status=" + status + ", statusChangedAt=" + statusChangedAt + "]";
 	}
 
 	public static class Builder {
@@ -117,9 +131,9 @@ public class BookRentalDTO {
 			return this;
 		}
 
-		public BookRentalDTO build() {
-			return new BookRentalDTO(this);
+		public UserBookRentalDTO build() {
+			return new UserBookRentalDTO(this);
 		}
 	}
-	
+
 }

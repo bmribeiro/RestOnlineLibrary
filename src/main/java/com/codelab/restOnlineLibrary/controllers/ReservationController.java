@@ -33,11 +33,11 @@ public class ReservationController {
 		}
 	}
 
-	@PutMapping("/reservations/{id}")
-	public ResponseEntity<Reservation> updateReservationStatus(@PathVariable Long id, @RequestParam String status) {
+	@PutMapping("/reservations")
+	public ResponseEntity<Reservation> updateReservationStatus(@RequestBody Reservation reservation) {
 		
 		try {
-			Reservation reservation = reservationService.updateReservationStatus(id, status);
+			Reservation reservationEl = reservationService.updateReservationStatus(reservation);
 			return ResponseEntity.ok(reservation);
 		
 		} catch (RuntimeException e) {
