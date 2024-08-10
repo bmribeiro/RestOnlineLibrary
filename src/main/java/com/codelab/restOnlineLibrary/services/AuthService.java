@@ -18,8 +18,9 @@ import com.codelab.restOnlineLibrary.dto.AuthUserDTO;
 import com.codelab.restOnlineLibrary.dto.LoginDTO;
 import com.codelab.restOnlineLibrary.dto.RegisterDTO;
 import com.codelab.restOnlineLibrary.entities.AuthUser;
+import com.codelab.restOnlineLibrary.enums.UserRole;
 import com.codelab.restOnlineLibrary.exceptions.AppException;
-import com.codelab.restOnlineLibrary.mappers.AuthMapper;
+import com.codelab.restOnlineLibrary.mappers.AuthenticationMapper;
 import com.codelab.restOnlineLibrary.repositories.AuthRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -32,18 +33,18 @@ public class AuthService {
 
 	private final AuthRepository authRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final AuthMapper authMapper;
+	private final AuthenticationMapper authenticationMapper;
 
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
 	}
 
-	public AuthService(AuthRepository authRepository, PasswordEncoder passwordEncoder, AuthMapper authMapper) {
+	public AuthService(AuthRepository authRepository, PasswordEncoder passwordEncoder, AuthenticationMapper authenticationMapper) {
 		super();
 		this.authRepository = authRepository;
 		this.passwordEncoder = passwordEncoder;
-		this.authMapper = authMapper;
+		this.authenticationMapper = authenticationMapper;
 	}
 
 	public AuthUserDTO login(LoginDTO loginDTO) {
@@ -51,7 +52,7 @@ public class AuthService {
 				.orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
 		if (passwordEncoder.matches(CharBuffer.wrap(loginDTO.password()), user.getPassword())) {
-			return authMapper.toDTO(user);
+			return authenticationMapper.toDTO(user);
 		}
 		throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
 
@@ -65,15 +66,16 @@ public class AuthService {
 			throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
 		}
 
-		AuthUser user = authMapper.toEntity(registerDTO);
+		AuthUser user = authenticationMapper.toEntity(registerDTO);
 		user.setPassword(passwordEncoder.encode(CharBuffer.wrap(registerDTO.password())));
-		user.setProfile("default");
-		user.setCreated(LocalDateTime.now());
-		user.setActive(true);
+		user.setRole(UserRole.USER_ROLE.getRole());
+		user.setCreatedAt(LocalDateTime.now());
+		user.setUserStatus(true);
+		user.setUserStatusChangedAt(LocalDateTime.now());
 
 		AuthUser savedUser = authRepository.save(user);
 
-		return authMapper.toDTO(savedUser);
+		return authenticationMapper.toDTO(savedUser);
 	}
 
 	public AuthUserDTO loginWithToken(String authHeader) {
@@ -106,7 +108,7 @@ public class AuthService {
 	public AuthUserDTO findByLogin(String login) {
 		AuthUser user = authRepository.findByEmail(login)
 				.orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-		return authMapper.toDTO(user);
+		return authenticationMapper.toDTO(user);
 	}
 
 }

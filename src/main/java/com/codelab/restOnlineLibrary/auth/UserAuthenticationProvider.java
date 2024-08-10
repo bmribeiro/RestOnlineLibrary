@@ -36,8 +36,8 @@ public class UserAuthenticationProvider {
 		Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
 		// Create and sign the JWT token
-		return JWT.create().withSubject(user.getEmail()).withIssuedAt(now).withExpiresAt(validity)
-				.withClaim("firstName", user.getFirstName()).withClaim("lastName", user.getLastName()).sign(algorithm);
+		return JWT.create().withIssuedAt(now).withExpiresAt(validity)
+				.withClaim("username", user.getUsername()).sign(algorithm);
 	}
 
 	public Authentication validateToken(String token) {
@@ -51,9 +51,8 @@ public class UserAuthenticationProvider {
 		// Verifies the token and decodes
 		DecodedJWT decoded = verifier.verify(token);
 
-		AuthUserDTO user = new AuthUserDTO.Builder().setEmail(decoded.getSubject())
-				.setFirstName(decoded.getClaim("firstName").asString())
-				.setLastName(decoded.getClaim("lastName").asString()).build();
+		AuthUserDTO user = new AuthUserDTO.Builder()
+				.setUsername(decoded.getClaim("username").asString()).build();
 
 		// Creates and returns an authentication object
 		return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());

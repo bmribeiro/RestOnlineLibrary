@@ -1,31 +1,13 @@
 package com.codelab.restOnlineLibrary.dto;
 
-import java.time.LocalDateTime;
+import com.codelab.restOnlineLibrary.entities.AuthUser;
+import com.codelab.restOnlineLibrary.entities.Book;
 
 public class ReservationDTO {
 
-	private Long bookId;
-	private Long userId;
 	private Long id;
-	private LocalDateTime reservedAt;
-	private String status;
-	private LocalDateTime statusChangedAt;
-
-	public Long getBookId() {
-		return bookId;
-	}
-
-	public void setBookId(Long bookId) {
-		this.bookId = bookId;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+	private AuthUser user;
+	private Book book;
 
 	public Long getId() {
 		return id;
@@ -35,27 +17,20 @@ public class ReservationDTO {
 		this.id = id;
 	}
 
-	public LocalDateTime getReservedAt() {
-		return reservedAt;
+	public AuthUser getUser() {
+		return user;
 	}
 
-	public void setReservedAt(LocalDateTime reservedAt) {
-		this.reservedAt = reservedAt;
+	public void setUser(AuthUser user) {
+		this.user = user;
 	}
 
-	public String getStatus() {
-		return status;
+	public Book getBook() {
+		return book;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setBook(Book book) {
+		this.book = book;
 	}
 
-	public LocalDateTime getStatusChangedAt() {
-		return statusChangedAt;
-	}
-
-	public void setStatusChangedAt(LocalDateTime statusChangedAt) {
-		this.statusChangedAt = statusChangedAt;
-	}
 }

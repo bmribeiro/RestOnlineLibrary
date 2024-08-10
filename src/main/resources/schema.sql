@@ -1,24 +1,13 @@
 -- Authenticated User
 CREATE TABLE auth_user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    profile VARCHAR(100) NOT NULL,
-    created TIMESTAMP NOT NULL,
-    active BOOLEAN NOT NULL
-);
-
-
--- InMemory User
-CREATE TABLE users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255),
-    email VARCHAR(255),
-    profile VARCHAR(255),
-    created TIMESTAMP,
-    active BOOLEAN
+    role VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    user_status BOOLEAN NOT NULL,
+    user_status_changed_at TIMESTAMP NOT NULL
 );
 
 -- InMemory books
@@ -38,6 +27,8 @@ CREATE TABLE reservations (
     reserved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(50) NOT NULL,
     status_changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES auth_user(id),
     FOREIGN KEY (book_id) REFERENCES books(id)
 );
+
+

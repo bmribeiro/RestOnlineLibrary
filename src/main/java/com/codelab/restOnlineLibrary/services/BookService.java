@@ -1,16 +1,16 @@
 package com.codelab.restOnlineLibrary.services;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.codelab.restOnlineLibrary.dto.book.BookDTO;
-import com.codelab.restOnlineLibrary.dto.book.BooksAvailableDTO;
-import com.codelab.restOnlineLibrary.dto.book.UserBookRentalDTO;
+
+import com.codelab.restOnlineLibrary.dto.views.book.BookViewDTO;
+import com.codelab.restOnlineLibrary.dto.views.user.UserRentalDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.entities.Reservation;
-import com.codelab.restOnlineLibrary.mappers.BookMapper;
+import com.codelab.restOnlineLibrary.enums.ReservationStatus;
 import com.codelab.restOnlineLibrary.repositories.BookRepository;
 import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
 
@@ -23,25 +23,6 @@ public class BookService {
 	@Autowired
 	private ReservationRepository reservationRepository;
 
-	@Autowired
-	private BookMapper bookMapper;
-
-	public List<BookDTO> findAll() {
-
-		List<Book> books = bookRepository.findAll();
-		return books.stream().map(bookMapper::toDTO).collect(Collectors.toList());
-	}
-
-	public Optional<BookDTO> findById(Long id) {
-		Optional<Book> book = bookRepository.findById(id);
-		return book.map(bookMapper::toDTO);
-	}
-
-	public BookDTO save(BookDTO bookDTO) {
-		Book book = bookMapper.toEntity(bookDTO);
-		return bookMapper.toDTO(bookRepository.save(book));
-	}
-
 	public boolean deleteById(Long id) {
 
 		if (bookRepository.existsById(id)) {
@@ -52,62 +33,68 @@ public class BookService {
 		}
 	}
 
-	public List<UserBookRentalDTO> getUserBookRentals(Long userId) {
+	public List<UserRentalDTO> getUserBookRentals(Long userId) {
 
 		// User reservations
 		List<Reservation> reservations = reservationRepository.findByUserId(userId);
 
-		// Id of books reserved by the user
+		// Books (ID) reserved by the user
 		List<Long> bookIds = reservations.stream().map(reservation -> reservation.getBook().getId())
 				.collect(Collectors.toList());
 
 		// Books reserved by the user
 		List<Book> books = bookRepository.findAllById(bookIds);
 
-		return reservations.stream()
+		return reservations.stream().map(reservation -> {
 
-				// transforms each element of the stream
-				.map(reservation -> {
+			// Find the book corresponding to the current reservation
+			Book book = books.stream()
+					.filter(b -> b.getId().equals(reservation.getBook().getId()))
+					.findFirst()
+					.orElseThrow(() -> new RuntimeException("Book not found"));
 
-					// used to find the book corresponding to the current reservation
-					Book book = books.stream()
+			// Build UserRentalDTO
+			UserRentalDTO dto = (UserRentalDTO) new UserRentalDTO.Builder()
+					.setBookId(book.getId())
+					.setTitle(book.getTitle())
+					.setCategory(book.getCategory())
+					.setRentalStatus(reservation.getRentalStatus())
+					.setRentalAt(reservation.getRentalAt())
+					.setRentalStatusChangedAt(reservation.getRentalStatusChangedAt())
+					.build();
 
-							// book associated with the current reservation
-							.filter(b -> b.getId().equals(reservation.getBook().getId())).findFirst()
-							.orElseThrow(() -> new RuntimeException("Book not found"));
-
-					// Build UserBookRentalDTO
-					UserBookRentalDTO dto = new UserBookRentalDTO.Builder().setId(book.getId())
-							.setTitle(book.getTitle()).setCategory(book.getCategory())
-							.setReservedAt(reservation.getReservedAt()).setStatus(reservation.getStatus())
-							.setStatusChangedAt(reservation.getStatusChangedAt()).build();
-
-					return dto;
-
-				}).collect(Collectors.toList());
-	}
-
-	public List<BooksAvailableDTO> getAllBooksWithUserRentalStatus(Long userId) {
-
-		// Books available
-		List<Book> allBooks = bookRepository.findAll();
-
-		// Ative reservations for the session user
-		List<Reservation> rentals = reservationRepository.findByUserIdAndStatus(userId, "rented");
-
-		// IDs of books the user has rented
-		List<Long> rentedBookIds = rentals.stream().map(rental -> rental.getBook().getId())
-				.collect(Collectors.toList());
-
-		return allBooks.stream().map(book -> {
-
-			// Build BooksAvailableDTO
-			return new BooksAvailableDTO.Builder().setId(book.getId()).setTitle(book.getTitle())
-					.setCategory(book.getCategory()).setCopies(book.getCopies()).setAvailable(book.isAvailable())
-					.setUserHasRented(rentedBookIds.contains(book.getId())).build();
+			return dto;
 
 		}).collect(Collectors.toList());
+	}
 
+	public List<BookViewDTO> getAllBooksWithUserRentalStatus(Long userId) {
+
+	    // Retrieve all books
+	    List<Book> allBooks = bookRepository.findAll();
+
+	    // Retrieve active reservations for the user
+	    List<Reservation> rentals = reservationRepository.findByUserIdAndRentalStatus(userId, ReservationStatus.RENTED.getStatus());
+
+		// Extract the IDs of books rented by the user
+	    List<Long> rentedBookIds = rentals.stream()
+	        .map(rental -> rental.getBook().getId())
+	        .collect(Collectors.toList());
+	    
+	    return allBooks.stream().map(book -> {
+	        
+	        boolean rentedByUser = rentedBookIds.contains(book.getId());
+
+	        // BookViewDTO 
+	        return new BookViewDTO.Builder()
+	            .setId(book.getId())
+	            .setTitle(book.getTitle())
+	            .setCategory(book.getCategory())
+	            .setCopies(book.getCopies())
+	            .setAvailable(book.isAvailable())
+	            .setRentedByUser(rentedByUser)
+	            .build();
+	    }).collect(Collectors.toList());
 	}
 
 }

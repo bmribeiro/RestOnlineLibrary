@@ -28,13 +28,13 @@ public class Reservation {
 	private Book book;
 
 	@Column(name = "reserved_at", nullable = false)
-	private LocalDateTime reservedAt;
+	private LocalDateTime rentalAt;
 
 	@Column(name = "status", length = 50, nullable = false)
-	private String status;
+	private String rentalStatus;
 
 	@Column(name = "status_changed_at", nullable = false)
-	private LocalDateTime statusChangedAt;
+	private LocalDateTime rentalStatusChangedAt;
 
 	public Long getId() {
 		return id;
@@ -60,34 +60,34 @@ public class Reservation {
 		this.book = book;
 	}
 
-	public LocalDateTime getReservedAt() {
-		return reservedAt;
+	public LocalDateTime getRentalAt() {
+		return rentalAt;
 	}
 
-	public void setReservedAt(LocalDateTime reservedAt) {
-		this.reservedAt = reservedAt;
+	public void setRentalAt(LocalDateTime rentalAt) {
+		this.rentalAt = rentalAt;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getRentalStatus() {
+		return rentalStatus;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setRentalStatus(String rentalStatus) {
+		this.rentalStatus = rentalStatus;
 	}
 
-	public LocalDateTime getStatusChangedAt() {
-		return statusChangedAt;
+	public LocalDateTime getRentalStatusChangedAt() {
+		return rentalStatusChangedAt;
 	}
 
-	public void setStatusChangedAt(LocalDateTime statusChangedAt) {
-		this.statusChangedAt = statusChangedAt;
+	public void setRentalStatusChangedAt(LocalDateTime rentalStatusChangedAt) {
+		this.rentalStatusChangedAt = rentalStatusChangedAt;
 	}
 
 	@Override
 	public String toString() {
-		return "Reservation [id=" + id + ", user=" + user + ", book=" + book + ", reservedAt=" + reservedAt
-				+ ", status=" + status + ", statusChangedAt=" + statusChangedAt + "]";
+		return "Reservation [id=" + id + ", user=" + user + ", book=" + book + ", rentalAt=" + rentalAt
+				+ ", rentalStatus=" + rentalStatus + ", rentalStatusChangedAt=" + rentalStatusChangedAt + "]";
 	}
 
 }

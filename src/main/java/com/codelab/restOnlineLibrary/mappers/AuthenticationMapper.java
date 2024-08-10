@@ -7,7 +7,7 @@ import com.codelab.restOnlineLibrary.dto.RegisterDTO;
 import com.codelab.restOnlineLibrary.entities.AuthUser;
 
 @Mapper(componentModel = "spring")
-public interface AuthMapper {
+public interface AuthenticationMapper {
 
 	AuthUserDTO toDTO(AuthUser user);
 

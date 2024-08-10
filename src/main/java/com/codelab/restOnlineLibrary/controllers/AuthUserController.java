@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codelab.restOnlineLibrary.dto.AuthUserDTO;
-import com.codelab.restOnlineLibrary.dto.book.UserBookRentalDTO;
-import com.codelab.restOnlineLibrary.services.AuthUserService;
+import com.codelab.restOnlineLibrary.constants.Constants;
+import com.codelab.restOnlineLibrary.dto.views.user.UserRentalDTO;
 import com.codelab.restOnlineLibrary.services.BookService;
 
 @RestController
@@ -21,29 +20,16 @@ import com.codelab.restOnlineLibrary.services.BookService;
 public class AuthUserController {
 
 	@Autowired
-	private AuthUserService authUserService;
-
-	@Autowired
 	private BookService bookService;
 
-	@GetMapping("/authUsers")
-	public ResponseEntity<List<AuthUserDTO>> findAll() {
 
-		List<AuthUserDTO> authUser = authUserService.findAll();
+	@GetMapping("/users/{userId}/rentals")
+	public ResponseEntity<List<UserRentalDTO>> getBooksRentedByUser(@PathVariable Long userId) {
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-
-		return new ResponseEntity<>(authUser, headers, HttpStatus.OK);
-	}
-
-	@GetMapping("/authUsers/{userId}/rentedBooks")
-	public ResponseEntity<List<UserBookRentalDTO>> getBooksRentedByUser(@PathVariable Long userId) {
-
-		List<UserBookRentalDTO> booksRentedByUser = bookService.getUserBookRentals(userId);
+		List<UserRentalDTO> booksRentedByUser = bookService.getUserBookRentals(userId);
 
 		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+		headers.add(HttpHeaders.CONTENT_TYPE, Constants.APPLICATION_JSON);
 
 		if (booksRentedByUser != null && !booksRentedByUser.isEmpty()) {
 			return new ResponseEntity<>(booksRentedByUser, headers, HttpStatus.OK);

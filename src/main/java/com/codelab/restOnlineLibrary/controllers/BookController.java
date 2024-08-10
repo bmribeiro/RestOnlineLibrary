@@ -9,14 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.codelab.restOnlineLibrary.dto.book.BookDTO;
-import com.codelab.restOnlineLibrary.dto.book.BooksAvailableDTO;
-import com.codelab.restOnlineLibrary.dto.book.UserBookRentalDTO;
+
+import com.codelab.restOnlineLibrary.constants.Constants;
+import com.codelab.restOnlineLibrary.dto.views.book.BookViewDTO;
+import com.codelab.restOnlineLibrary.dto.views.user.UserRentalDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.services.BookService;
 
@@ -27,39 +26,10 @@ public class BookController {
 	@Autowired
 	private BookService bookService;
 
-	@GetMapping("/books")
-	public ResponseEntity<List<BookDTO>> findAll() {
-
-		List<BookDTO> books = bookService.findAll();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-
-		return new ResponseEntity<>(books, headers, HttpStatus.OK);
-	}
-
 	@GetMapping("/books/user-status/{userId}")
-	public ResponseEntity<List<BooksAvailableDTO>> getAllBooksWithUserRentalStatus(@PathVariable Long userId) {
-		List<BooksAvailableDTO> books = bookService.getAllBooksWithUserRentalStatus(userId);
+	public ResponseEntity<List<BookViewDTO>> getAllBooksWithUserRentalStatus(@PathVariable Long userId) {
+		List<BookViewDTO> books = bookService.getAllBooksWithUserRentalStatus(userId);
 		return ResponseEntity.ok(books);
-	}
-
-	@GetMapping("/books/{id}")
-	public ResponseEntity<BookDTO> findById(@PathVariable Long id) {
-
-		return bookService.findById(id).map(ResponseEntity::ok)
-				.orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-	}
-
-	@PostMapping("/books")
-	public ResponseEntity<BookDTO> save(@RequestBody BookDTO bookDTO) {
-
-		BookDTO savedBook = bookService.save(bookDTO);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-
-		return new ResponseEntity<>(savedBook, headers, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/books/{id}")
@@ -73,13 +43,13 @@ public class BookController {
 	}
 
 	@GetMapping("/books/rented")
-	public ResponseEntity<List<UserBookRentalDTO>> getUserBookRentals(@RequestParam Long userId) {
-		
-		List<UserBookRentalDTO> rentals = bookService.getUserBookRentals(userId);
-		
+	public ResponseEntity<List<UserRentalDTO>> getUserBookRentals(@RequestParam Long userId) {
+
+		List<UserRentalDTO> rentals = bookService.getUserBookRentals(userId);
+
 		HttpHeaders headers = new HttpHeaders();
-		headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-		
+		headers.add(HttpHeaders.CONTENT_TYPE, Constants.APPLICATION_JSON);
+
 		return new ResponseEntity<>(rentals, headers, HttpStatus.OK);
 	}
 

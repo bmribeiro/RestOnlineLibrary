@@ -21,13 +21,9 @@ public class AuthUser {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "first_name", nullable = false)
+	@Column(name = "username", nullable = false)
 	@Size(max = 100)
-	private String firstName;
-
-	@Column(name = "last_name", nullable = false)
-	@Size(max = 100)
-	private String lastName;
+	private String username;
 
 	@Column(nullable = false)
 	@Size(max = 100)
@@ -38,13 +34,16 @@ public class AuthUser {
 	private String password;
 
 	@Column(nullable = false)
-	private String profile;
+	private String role;
 
-	@Column(nullable = false)
-	private LocalDateTime created;
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
 
-	@Column(nullable = false)
-	private boolean active;
+	@Column(name = "user_status", nullable = false)
+	private boolean userStatus;
+
+	@Column(name = "user_status_changed_at", nullable = false)
+	private LocalDateTime userStatusChangedAt;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<Reservation> reservations;
@@ -57,20 +56,12 @@ public class AuthUser {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getEmail() {
@@ -89,28 +80,36 @@ public class AuthUser {
 		this.password = password;
 	}
 
-	public String getProfile() {
-		return profile;
+	public String getRole() {
+		return role;
 	}
 
-	public void setProfile(String profile) {
-		this.profile = profile;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
-	public LocalDateTime getCreated() {
-		return created;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated(LocalDateTime created) {
-		this.created = created;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public boolean isActive() {
-		return active;
+	public boolean isUserStatus() {
+		return userStatus;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setUserStatus(boolean userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public LocalDateTime getUserStatusChangedAt() {
+		return userStatusChangedAt;
+	}
+
+	public void setUserStatusChangedAt(LocalDateTime userStatusChangedAt) {
+		this.userStatusChangedAt = userStatusChangedAt;
 	}
 
 	public List<Reservation> getReservations() {
@@ -123,8 +122,9 @@ public class AuthUser {
 
 	@Override
 	public String toString() {
-		return "AuthUser [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", password=" + password + "]";
+		return "AuthUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
+				+ ", role=" + role + ", createdAt=" + createdAt + ", userStatus=" + userStatus
+				+ ", userStatusChangedAt=" + userStatusChangedAt + ", reservations=" + reservations + "]";
 	}
 
 }

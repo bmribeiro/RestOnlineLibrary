@@ -1,3 +1,3 @@
 package com.codelab.restOnlineLibrary.dto;
 
-public record RegisterDTO (String firstName, String lastName, String email, String password) { }
+public record RegisterDTO (String username, String email, String password) { }

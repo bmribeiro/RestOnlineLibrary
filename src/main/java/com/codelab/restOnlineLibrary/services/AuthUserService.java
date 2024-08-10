@@ -1,15 +1,11 @@
 package com.codelab.restOnlineLibrary.services;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.codelab.restOnlineLibrary.dto.AuthUserDTO;
-import com.codelab.restOnlineLibrary.entities.AuthUser;
-import com.codelab.restOnlineLibrary.mappers.AuthMapper;
+import com.codelab.restOnlineLibrary.mappers.AuthUserMapper;
 import com.codelab.restOnlineLibrary.repositories.AuthUserRepository;
+import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
 
 @Service
 public class AuthUserService {
@@ -18,11 +14,10 @@ public class AuthUserService {
 	private AuthUserRepository authUserRepository;
 
 	@Autowired
-	private AuthMapper authUserMapper;
+	private ReservationRepository reservationRepository;
 
-	public List<AuthUserDTO> findAll() {
-		List<AuthUser> authUsers = authUserRepository.findAll();
-		return authUsers.stream().map(authUserMapper::toDTO).collect(Collectors.toList());
-	}
+	@Autowired
+	private AuthUserMapper authUserMapper;
+
 
 }
