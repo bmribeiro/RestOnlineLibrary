@@ -33,4 +33,9 @@ public class ReservationDTO {
 		this.book = book;
 	}
 
+	@Override
+	public String toString() {
+		return "ReservationDTO [id=" + id + ", user=" + user + ", book=" + book + "]";
+	}
+
 }

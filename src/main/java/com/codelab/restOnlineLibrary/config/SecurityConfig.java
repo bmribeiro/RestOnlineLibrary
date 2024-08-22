@@ -40,6 +40,8 @@ public class SecurityConfig {
 						
 						// TODO: Remove - DEBUG PURPOSE
 						.requestMatchers("/h2-console/**").permitAll()
+						.requestMatchers("/ws/**").permitAll()
+						
 						
 						.anyRequest().authenticated());
 		
