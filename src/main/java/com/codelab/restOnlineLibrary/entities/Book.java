@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,6 +29,9 @@ public class Book {
 
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
 	private List<Reservation> reservations;
+
+	@OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
+	private BookDetails bookDetails;
 
 	public Book() {
 	}
@@ -87,9 +91,18 @@ public class Book {
 		this.reservations = reservations;
 	}
 
+	public BookDetails getBookDetails() {
+		return bookDetails;
+	}
+
+	public void setBookDetails(BookDetails bookDetails) {
+		this.bookDetails = bookDetails;
+	}
+
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", title=" + title + ", category=" + category + ", copies=" + copies + ", available="
-				+ available + ", reservations=" + reservations + "]";
+				+ available + ", reservations=" + reservations + ", bookDetails=" + bookDetails + "]";
 	}
+
 }

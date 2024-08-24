@@ -1,4 +1,4 @@
--- Authenticated User
+-- Users
 CREATE TABLE auth_user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE auth_user (
     user_status_changed_at TIMESTAMP NOT NULL
 );
 
--- InMemory books
+-- Books
 CREATE TABLE books (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255),
@@ -19,7 +19,7 @@ CREATE TABLE books (
     available BOOLEAN
 );
 
--- reservations
+-- Reservations
 CREATE TABLE reservations (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,

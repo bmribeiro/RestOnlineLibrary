@@ -131,7 +131,12 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
-
+		<!-- AWS S3 -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.27.11</version>
+		</dependency>
 	</dependencies>
 
 	<build>
