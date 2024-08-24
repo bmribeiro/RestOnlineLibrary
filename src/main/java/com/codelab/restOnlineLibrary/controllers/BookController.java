@@ -1,5 +1,6 @@
 package com.codelab.restOnlineLibrary.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,18 @@ public class BookController {
 
 	@Autowired
 	private BookService bookService;
+	
+	@PostMapping("/books")
+    public ResponseEntity<Book> saveBook(@RequestBody Book book) throws IOException {
+
+        Book savedBook = bookService.saveBook(book);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+
+        return new ResponseEntity<>(savedBook, headers, HttpStatus.CREATED);
+    }
+	
 
 	@GetMapping("/books/user-status/{userId}")
 	public ResponseEntity<List<BookViewDTO>> getAllBooksWithUserRentalStatus(@PathVariable Long userId) {
@@ -55,7 +70,6 @@ public class BookController {
 	}
 
 	@GetMapping("/books/most-popular")
-	
     public ResponseEntity<PopularBook> getMostPopularBook() {
 		
         PopularBook mostPopularBook = bookService.getMostPopularBook();
@@ -78,8 +92,6 @@ public class BookController {
             return ResponseEntity.noContent().build();
         }
     }
-	
-	
 	
 
 }

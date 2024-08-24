@@ -2,6 +2,9 @@ package com.codelab.restOnlineLibrary.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,8 +33,9 @@ public class Book {
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
 	private List<Reservation> reservations;
 
-	@OneToOne(mappedBy = "book", fetch = FetchType.LAZY)
-	private BookDetails bookDetails;
+	@OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JsonManagedReference
+	private BookDetail bookDetail;
 
 	public Book() {
 	}
@@ -91,18 +95,18 @@ public class Book {
 		this.reservations = reservations;
 	}
 
-	public BookDetails getBookDetails() {
-		return bookDetails;
+	public BookDetail getBookDetail() {
+		return bookDetail;
 	}
 
-	public void setBookDetails(BookDetails bookDetails) {
-		this.bookDetails = bookDetails;
+	public void setBookDetail(BookDetail bookDetail) {
+		this.bookDetail = bookDetail;
 	}
 
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", title=" + title + ", category=" + category + ", copies=" + copies + ", available="
-				+ available + ", reservations=" + reservations + ", bookDetails=" + bookDetails + "]";
+				+ available + ", reservations=" + reservations + ", bookDetail=" + bookDetail + "]";
 	}
 
 }

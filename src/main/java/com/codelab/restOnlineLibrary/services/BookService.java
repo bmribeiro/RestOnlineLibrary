@@ -1,5 +1,6 @@
 package com.codelab.restOnlineLibrary.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,12 +8,15 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.codelab.restOnlineLibrary.aws.S3BucketService;
 import com.codelab.restOnlineLibrary.dataAnalysis.PopularBook;
 import com.codelab.restOnlineLibrary.dto.views.book.BookViewDTO;
 import com.codelab.restOnlineLibrary.dto.views.user.UserRentalDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
+import com.codelab.restOnlineLibrary.entities.BookDetail;
 import com.codelab.restOnlineLibrary.entities.Reservation;
 import com.codelab.restOnlineLibrary.enums.ReservationStatus;
+import com.codelab.restOnlineLibrary.repositories.BookDetailRepository;
 import com.codelab.restOnlineLibrary.repositories.BookRepository;
 import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
 
@@ -21,9 +25,29 @@ public class BookService {
 
 	@Autowired
 	private BookRepository bookRepository;
+	
+	@Autowired
+	private BookDetailRepository bookDetailRepository;  
 
 	@Autowired
 	private ReservationRepository reservationRepository;
+	
+	@Autowired
+	private S3BucketService s3BucketService;
+	
+	public Book saveBook(Book book) throws IOException {
+		
+		Book savedBook = bookRepository.save(book);
+		
+		BookDetail bookDetail = book.getBookDetail();
+		bookDetail.setBook(savedBook);
+		bookDetailRepository.save(bookDetail);
+		
+		// Upload da imagem para o S3
+		s3BucketService.uploadImageToS3(bookDetail);
+				
+		return savedBook;
+	}
 
 	public boolean deleteById(Long id) {
 

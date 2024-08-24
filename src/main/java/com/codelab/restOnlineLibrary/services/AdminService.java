@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.codelab.restOnlineLibrary.aws.S3BucketService;
 import com.codelab.restOnlineLibrary.dto.views.book.BookDetailDTO;
 import com.codelab.restOnlineLibrary.dto.views.book.BookViewDTO;
 import com.codelab.restOnlineLibrary.dto.views.book.RentalUsersDTO;
@@ -17,6 +18,7 @@ import com.codelab.restOnlineLibrary.entities.Book;
 import com.codelab.restOnlineLibrary.entities.Reservation;
 import com.codelab.restOnlineLibrary.mappers.AuthUserMapper;
 import com.codelab.restOnlineLibrary.repositories.AuthRepository;
+import com.codelab.restOnlineLibrary.repositories.BookDetailRepository;
 import com.codelab.restOnlineLibrary.repositories.BookRepository;
 import com.codelab.restOnlineLibrary.repositories.ReservationRepository;
 
@@ -27,6 +29,9 @@ public class AdminService {
 	private BookRepository bookRepository;
 	
 	@Autowired
+	private BookDetailRepository bookDetailRepository;
+	
+	@Autowired
 	private AuthRepository authRepository;
 
 	@Autowired
@@ -34,6 +39,9 @@ public class AdminService {
 	
 	@Autowired
 	private AuthUserMapper authUserMapper;
+	
+	@Autowired
+	private S3BucketService s3BucketService;
 	
 	public List<UserViewDTO> findAll() {
 
@@ -53,6 +61,9 @@ public class AdminService {
 		// Convert the list of reservations to a list of RentalUsersDTO
 		List<RentalUsersDTO> userBookRentals = reservations.stream().map(this::reservationToRentalDTO)
 				.collect(Collectors.toList());
+		
+		// Generate the image URL
+        String imageUrl = s3BucketService.generateImageUrl(book.getBookDetail());
 
 		// Create and complete the BookDetailDTO
 		BookDetailDTO bookDetail = new BookDetailDTO();
@@ -64,6 +75,8 @@ public class AdminService {
 				.setCategory(book.getCategory())
 				.setCopies(book.getCopies())
 				.setAvailable(book.isAvailable())
+				.setBookDescription(book.getBookDetail().getBookDescription())
+				.setUrl(imageUrl)
 				.build();
 		
 		bookDetail.setBooksView(bookView);
