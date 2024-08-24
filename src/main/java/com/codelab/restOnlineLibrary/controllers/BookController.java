@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codelab.restOnlineLibrary.constants.Constants;
+import com.codelab.restOnlineLibrary.dataAnalysis.PopularBook;
 import com.codelab.restOnlineLibrary.dto.views.book.BookViewDTO;
 import com.codelab.restOnlineLibrary.dto.views.user.UserRentalDTO;
 import com.codelab.restOnlineLibrary.entities.Book;
@@ -52,5 +53,33 @@ public class BookController {
 
 		return new ResponseEntity<>(rentals, headers, HttpStatus.OK);
 	}
+
+	@GetMapping("/books/most-popular")
+	
+    public ResponseEntity<PopularBook> getMostPopularBook() {
+		
+        PopularBook mostPopularBook = bookService.getMostPopularBook();
+        
+        if (mostPopularBook != null) {
+            return ResponseEntity.ok(mostPopularBook);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/books/most-popular-by-category")
+    public ResponseEntity<List<PopularBook>> getMostPopularBookByCategory() {
+    	
+        List<PopularBook> mostPopularBooksByCategory = bookService.getMostPopularBookByCategory();
+        
+        if (mostPopularBooksByCategory != null && !mostPopularBooksByCategory.isEmpty()) {
+            return ResponseEntity.ok(mostPopularBooksByCategory);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+	
+	
+	
 
 }
